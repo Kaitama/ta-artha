@@ -27,6 +27,18 @@ class Create extends Component
 
     public $keterangan;
 
+    public $limit_pinjaman;
+
+    public function updatedPegawai($value)
+    {
+        $user = User::find($value);
+        $limit = $user->roles->first()->limit;
+        $terpinjam = $user->cashflows()->whereMonth('saved_at', Carbon::now()->month)->sum('nominal');
+        if ($limit > 0) {
+            $this->limit_pinjaman = $limit - $terpinjam;
+        }
+    }
+
     public function mount()
     {
         $this->tanggal = Carbon::now()->format('Y-m-d');
@@ -47,7 +59,7 @@ class Create extends Component
             'jabatan'   => 'required',
             'pegawai'   => 'required',
             'tipe'      => 'required',
-            'nominal'   => 'required|integer|min:1000',
+            'nominal'   => $this->limit_pinjaman ? 'required|integer|max:' . $this->limit_pinjaman : 'required|integer',
             'keterangan'=> 'nullable|string|max:255',
         ]);
 

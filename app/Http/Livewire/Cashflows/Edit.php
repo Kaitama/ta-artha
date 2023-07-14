@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cashflows;
 
 use App\Models\Cashflow;
+use Carbon\Carbon;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
@@ -12,6 +13,8 @@ class Edit extends Component
 
     public $pegawai;
 
+    public $limit_pinjaman;
+
     protected $validationAttributes = [
         'cashflow.saved_at' => 'tanggal',
         'cashflow.type' => 'tipe',
@@ -20,7 +23,13 @@ class Edit extends Component
 
     public function mount()
     {
-        $this->pegawai = $this->cashflow->user->name;
+        $user = $this->cashflow->user;
+        $this->pegawai = $user->name;
+        $limit = $user->roles->first()->limit;
+        $terpinjam = $user->cashflows()->whereMonth('saved_at', Carbon::now()->month)->whereNot('id', $this->cashflow->id)->sum('nominal');
+        if ($limit > 0) {
+            $this->limit_pinjaman = $limit - $terpinjam;
+        }
     }
 
     protected function rules(): array
@@ -28,7 +37,7 @@ class Edit extends Component
         return [
             'cashflow.saved_at' => 'required',
             'cashflow.type' => 'required',
-            'cashflow.nominal' => 'required|integer|min:1000',
+            'cashflow.nominal' => $this->limit_pinjaman ? 'required|integer|max:' . $this->limit_pinjaman : 'required|integer',
             'cashflow.description' => 'nullable|string|max:255',
         ];
     }

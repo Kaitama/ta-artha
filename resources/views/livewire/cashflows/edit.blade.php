@@ -33,6 +33,14 @@
                     <x-input-error for="cashflow.type" />
                 </div>
                 <div class="col-span-4">
+                    <x-label>Sisa limit yang dapat digunakan pada bulan ini</x-label>
+                    @if($limit_pinjaman)
+                        <div class="font-bold text-gray-600">{{ \App\Helpers\Rupiah::format($limit_pinjaman) }}</div>
+                    @else
+                        <div class="text-gray-600">~</div>
+                    @endif
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Nominal</x-label>
                     <x-input type="number" wire:model.defer="cashflow.nominal" />
                     <x-input-error for="cashflow.nominal" />

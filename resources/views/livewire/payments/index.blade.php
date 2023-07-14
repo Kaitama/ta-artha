@@ -58,6 +58,7 @@
                     <x-th>Gaji Pokok</x-th>
                     <x-th>Tambahan</x-th>
                     <x-th>Potongan</x-th>
+                    <x-th>Persepuluhan</x-th>
                     <x-th>Gaji Bersih</x-th>
                     <x-th></x-th>
                 </x-slot>
@@ -86,6 +87,12 @@
                             <div class="flex items-center justify-between">
                                 <span>Rp</span>
                                 <span>{{ \App\Helpers\Rupiah::format($payment->withdraw) }}</span>
+                            </div>
+                        </x-td>
+                        <x-td>
+                            <div class="flex items-center justify-between">
+                                <span>Rp</span>
+                                <span>{{ \App\Helpers\Rupiah::format(($payment->base + $payment->travel + $payment->bonus - $payment->withdraw - $payment->absence_cut) * 0.1) }}</span>
                             </div>
                         </x-td>
                         <x-td>

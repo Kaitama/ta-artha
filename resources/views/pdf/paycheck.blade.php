@@ -23,14 +23,17 @@
     <p style="text-align: center"><strong>{{ config('app.name') }}, {{ $check->created_at->isoFormat('LL') }}</strong></p>
     <hr>
 
+    <p>
+        Periode {{ $check->created_at->firstOfMonth()->isoFormat('LL') }} sampai {{ $check->created_at->endOfMonth()->isoFormat('LL') }}
+    </p>
     <table style="width: 100%; margin-top: 24px">
         <tr>
             <th colspan="2">Pokok</th>
         </tr>
         @if($check->point || $check->hours)
             <tr>
-                <td>{{ $check->point ? 'Jumlah Point' : 'Jumlah Jam' }}</td>
-                <td class="right">{{ $check->point }}</td>
+                <td>{{ $check->point ? 'Jumlah Point' : 'Total Jam Mengajar' }}</td>
+                <td class="right">{{ $check->point > 0 ? $check->point : $check->hours }}</td>
             </tr>
             <tr>
                 <td>Rate</td>

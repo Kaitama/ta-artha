@@ -26,6 +26,7 @@ class Edit extends Component
             'role.base' => 'nullable|integer|min:0',
             'role.rate' => 'nullable|integer|min:0',
             'role.bonus' => 'nullable|integer|min:0',
+            'role.limit' => 'nullable|integer'
         ];
     }
 
@@ -36,6 +37,7 @@ class Edit extends Component
         'role.base' => 'gaji pokok',
         'role.rate' => 'rate',
         'role.bonus' => 'tunjangan',
+        'role.limit' => 'limit',
     ];
 
     public function render()

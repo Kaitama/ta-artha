@@ -18,54 +18,61 @@
                     <x-select wire:model="jabatan">
                         <option value="" selected>Pilih salah satu</option>
                         @foreach($roles as $role)
-                            <option value="{{ $role }}">{{ ucwords(str_replace('-', ' ', $role)) }}</option>
+                            <option value="{{ $role }}" {{ isset($role_exists[$role]) && $role_exists[$role] ? 'disabled' : '' }}>{{ ucwords(str_replace('-', ' ', $role)) }}</option>
                         @endforeach
                     </x-select>
                     <x-input-error for="jabatan" />
                 </div>
                 <div class="col-span-4">
+                    <x-label>Keterangan Jabatan</x-label>
+                    <x-input type="text" wire:model.defer="keterangan" />
+                    <x-input-error for="keterangan" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Nomor Induk Pegawai/Guru</x-label>
-                    <x-input type="text" wire:model="nomor_induk" />
+                    <x-input type="text" wire:model.defer="nomor_induk" />
                     <x-input-error for="nomor_induk" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Nama Lengkap</x-label>
-                    <x-input type="text" wire:model="nama_lengkap" />
+                    <x-input type="text" wire:model.defer="nama_lengkap" />
                     <x-input-error for="nama_lengkap" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Login Username</x-label>
-                    <x-input type="text" wire:model="username" />
+                    <x-input type="text" wire:model.defer="username" />
                     <x-input-error for="username" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Alamat Email</x-label>
-                    <x-input type="text" wire:model="email" />
+                    <x-input type="text" wire:model.defer="email" />
                     <x-input-error for="email" />
                 </div>
                 <div class="col-span-4">
                     <x-label>Nomor Telepon/WA</x-label>
-                    <x-input type="text" wire:model="telepon" />
+                    <x-input type="text" wire:model.defer="telepon" />
                     <x-input-error for="telepon" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Jam Masuk Absensi</x-label>
-                    <x-input type="text" wire:model="jam_masuk" />
+                    <x-input type="text" wire:model.defer="jam_masuk" />
                     <x-input-error for="jam_masuk" />
                 </div>
                 @if($jabatan === 'guru-tetap' || $jabatan === 'kasir' || $jabatan === 'kepala-sekolah')
                 <div class="col-span-4">
                     <x-label :required="true">Point</x-label>
-                    <x-input type="number" wire:model="point" />
+                    <x-input type="number" wire:model.defer="point" />
                     <x-input-error for="point" />
                 </div>
                 @endif
                 @if($jabatan === 'guru-honor')
-                <div class="col-span-4">
-                    <x-label :required="true">Jumlah Jam Mengajar/Bulan</x-label>
-                    <x-input type="number" wire:model="jam_mengajar" />
-                    <x-input-error for="jam_mengajar" />
-                </div>
+                    @foreach($days as $key => $day)
+                        <div class="col-span-4">
+                            <x-label :required="true">Jumlah Jam Mengajar {{ $day }}</x-label>
+                            <x-input type="number" wire:model.defer="jam_mengajar.{{ $key }}" />
+                            <x-input-error for="jam_mengajar" />
+                        </div>
+                    @endforeach
                 @endif
                 <div class="col-span-4">
                     <x-label>Status</x-label>

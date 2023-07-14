@@ -34,6 +34,7 @@
                     <x-th>Travel</x-th>
                     <x-th>Tunjangan</x-th>
                     <x-th>Pot. Absen</x-th>
+                    <x-th>Limit</x-th>
                     @canany(['ubah-jabatan', 'hapus-jabatan'])
                     <x-th></x-th>
                     @endcanany
@@ -75,6 +76,12 @@
                             <div class="flex items-center justify-between">
                                 <span>Rp</span>
                                 <span>{{ \App\Helpers\Rupiah::format($role->absence_cut) }}</span>
+                            </div>
+                        </x-td>
+                        <x-td class="w-36">
+                            <div class="flex items-center justify-between">
+                                <span>Rp</span>
+                                <span>{{ $role->limit ? \App\Helpers\Rupiah::format($role->limit) : '~' }}</span>
                             </div>
                         </x-td>
                         @canany(['ubah-jabatan', 'hapus-jabatan'])

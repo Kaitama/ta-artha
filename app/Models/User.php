@@ -36,6 +36,7 @@ class User extends Authenticatable
         'name',
         'username',
         'is_active',
+        'description',
         'phone',
         'email',
         'password',
@@ -106,8 +107,13 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    public function teachinghours(): HasMany
+    {
+        return $this->hasMany(Teachinghour::class);
+    }
 
-    public function hitungGaji(): int
+
+    public function hitungGaji(int $hours = 0): int
     {
         // guru tetap, kepsek, kasir
         if($this->point) {
@@ -115,7 +121,7 @@ class User extends Authenticatable
         }
         // guru honor
         elseif ($this->hours) {
-            return $this->hours * $this->roles->first()->rate;
+            return $hours * $this->roles->first()->rate;
         }
         // pegawai, bendahara, dll
         else {

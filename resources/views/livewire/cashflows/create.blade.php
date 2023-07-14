@@ -31,7 +31,7 @@
                 @if($jabatan)
                     <div class="col-span-4">
                         <x-label :required="true">Nama Pegawai</x-label>
-                        <x-select wire:model.defer="pegawai">
+                        <x-select wire:model="pegawai">
                             <option value="">Pilih pegawai</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}">{{ $user->nip }} - {{ $user->name }}</option>
@@ -50,6 +50,16 @@
                     </x-select>
                     <x-input-error for="tipe" />
                 </div>
+                @if($pegawai)
+                <div class="col-span-4">
+                    <x-label>Sisa limit yang dapat digunakan pada bulan ini</x-label>
+                    @if($limit_pinjaman)
+                        <div class="font-bold text-gray-600">{{ \App\Helpers\Rupiah::format($limit_pinjaman) }}</div>
+                    @else
+                        <div class="text-gray-600">~</div>
+                    @endif
+                </div>
+                @endif
                 <div class="col-span-4">
                     <x-label :required="true">Nominal</x-label>
                     <x-input type="number" wire:model.defer="nominal" />

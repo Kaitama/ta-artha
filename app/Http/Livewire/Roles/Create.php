@@ -19,6 +19,8 @@ class Create extends Component
 
     public $tunjangan = 0;
 
+    public $limit;
+
     public function render()
     {
         return view('livewire.roles.create');
@@ -33,6 +35,7 @@ class Create extends Component
             'gaji_pokok' => 'nullable|integer|min:0',
             'rate' => 'nullable|integer|min:0',
             'tunjangan' => 'nullable|integer|min:0',
+            'limit' => 'nullable|integer',
         ]);
 
         Role::create([
@@ -42,6 +45,7 @@ class Create extends Component
             'base' => $this->gaji_pokok,
             'rate' => $this->rate,
             'bonus' => $this->tunjangan,
+            'limit' => $this->limit,
         ]);
 
         return to_route('roles.index')->success('Jabatan berhasil disimpan.');

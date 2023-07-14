@@ -47,6 +47,11 @@
                     <x-input type="number" wire:model.defer="role.bonus" />
                     <x-input-error for="role.bonus" />
                 </div>
+                <div class="col-span-4">
+                    <x-label>Maksimal Pinjaman/Bulan</x-label>
+                    <x-input type="number" wire:model.defer="role.limit" />
+                    <x-input-error for="role.limit" />
+                </div>
             </x-slot>
 
             <x-slot name="actions">

@@ -59,14 +59,22 @@ class Index extends Component
     {
         $validations = AbsenceValidation::whereMonth('for_date', $this->month)
             ->whereYear('for_date', $this->year)->orderBy('for_date')->get();
+
         $users = User::where('is_active', true)->whereHas('roles')->get();
 
         foreach ($users as $user) {
             $r = $user->roles->first();
             $absence = 0;
+            $total_hours = 0;
             foreach ($validations as $validation){
                 if(!$user->absences()->whereDate('created_at', $validation->for_date)->exists()){
                     $absence++;
+                } else {
+                    if ($user->hours > 0) {
+                        $day_int = $validation->for_date->getDaysFromStartOfWeek() + 1;
+                        $teaching_hour = $user->teachinghours()->where('day', $day_int)->first();
+                        $total_hours += $teaching_hour->hours ?? 0;
+                    }
                 }
             }
             $minus = $user->cashflows()
@@ -74,7 +82,7 @@ class Index extends Component
                 ->whereYear('saved_at', $this->year)
                 ->sum('nominal');
             $absence_cut = $absence * $r->absence_cut;
-            $base = $user->hitungGaji();
+            $base = $user->hitungGaji($total_hours);
             $bruto = $base + $r->travel + $r->bonus - $minus - $absence_cut;
             $ten_percent = $bruto * 10 / 100;
             $salary = $bruto - $ten_percent;
@@ -82,7 +90,7 @@ class Index extends Component
                 'month' => $this->month,
                 'year'  => $this->year,
                 'point' => $user->point,
-                'hours' => $user->hours,
+                'hours' => $total_hours,
                 'rate'  => $r->rate,
                 'base'  => $base,
                 'travel'=> $r->travel,

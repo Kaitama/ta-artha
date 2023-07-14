@@ -18,10 +18,15 @@
                     <x-select wire:model="jabatan">
                         <option value="" selected>Pilih salah satu</option>
                         @foreach($roles as $role)
-                            <option value="{{ $role }}">{{ ucwords(str_replace('-', ' ', $role)) }}</option>
+                            <option value="{{ $role }}" {{ isset($role_exists[$role]) && $role_exists[$role] ? 'disabled' : '' }}>{{ ucwords(str_replace('-', ' ', $role)) }}</option>
                         @endforeach
                     </x-select>
                     <x-input-error for="jabatan" />
+                </div>
+                <div class="col-span-4">
+                    <x-label>Keterangan Jabatan</x-label>
+                    <x-input type="text" wire:model.defer="user.description" />
+                    <x-input-error for="user.description" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Nomor Induk Pegawai/Guru</x-label>
@@ -61,11 +66,13 @@
                     </div>
                 @endif
                 @if($jabatan === 'guru-honor')
-                    <div class="col-span-4">
-                        <x-label :required="true">Jumlah Jam Mengajar/Bulan</x-label>
-                        <x-input type="number" wire:model.defer="user.hours" />
-                        <x-input-error for="user.hours" />
-                    </div>
+                    @foreach($days as $key => $day)
+                        <div class="col-span-4">
+                            <x-label :required="true">Jumlah Jam Mengajar {{ $day }}</x-label>
+                            <x-input type="number" wire:model.defer="jam_mengajar.{{ $key }}" />
+                            <x-input-error for="jam_mengajar" />
+                        </div>
+                    @endforeach
                 @endif
                 <div class="col-span-4">
                     <x-label>Status</x-label>
