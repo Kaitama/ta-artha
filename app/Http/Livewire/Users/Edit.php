@@ -23,6 +23,7 @@ class Edit extends Component
     protected $validationAttributes = [
         'user.nip'     => 'nomor induk',
         'user.name'    => 'nama lengkap',
+        'user.gender'  => 'jenis kelamin',
         'user.phone'   => 'telepon',
         'user.check_in'=> 'jam masuk',
         'user.hours'   => 'jam mengajar',
@@ -59,6 +60,7 @@ class Edit extends Component
             'jabatan'  => 'required',
             'user.nip'   => 'required|unique:users,nip,' . $id,
             'user.name'  => 'required',
+            'user.gender' => 'required',
             'user.username'      => 'required|alpha_num|unique:users,username,' . $id,
             'user.email'         => 'required|email|unique:users,email,' . $id,
             'user.phone'        => 'nullable',

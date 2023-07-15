@@ -19,6 +19,8 @@ class Create extends Component
 
     public $nama_lengkap;
 
+    public $jenis_kelamin = true;
+
     public $username;
 
     public $email;
@@ -85,6 +87,7 @@ class Create extends Component
             'point'     => $this->point,
             'hours'     => $this->require_hours ? array_sum($this->jam_mengajar) : 0,
             'name'      => $this->nama_lengkap,
+            'gender'    => $this->jenis_kelamin,
             'email'     => $this->email,
             'username'  => $this->username,
             'phone'     => $this->telepon,

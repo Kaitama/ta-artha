@@ -39,6 +39,14 @@
                     <x-input-error for="nama_lengkap" />
                 </div>
                 <div class="col-span-4">
+                    <x-label :required="true">Jenis Kelamin</x-label>
+                    <x-select wire:model.defer="jenis_kelamin">
+                        <option value="1">Laki-laki</option>
+                        <option value="0">Perempuan</option>
+                    </x-select>
+                    <x-input-error for="jenis_kelamin" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Login Username</x-label>
                     <x-input type="text" wire:model.defer="username" />
                     <x-input-error for="username" />

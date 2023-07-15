@@ -34,6 +34,7 @@ class User extends Authenticatable
         'point',
         'hours',
         'name',
+        'gender',
         'username',
         'is_active',
         'description',

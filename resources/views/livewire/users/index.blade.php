@@ -49,7 +49,7 @@
                         <x-td class="flex items-center whitespace-nowrap">
                             <img class="w-10 h-10 rounded-full" src="{{ $user->profile_photo_url }}" alt="">
                             <div class="pl-3">
-                                <div class="text-gray-800 font-medium">{{ $user->name }}</div>
+                                <div class="{{ $user->gender ? 'text-blue-800' : 'text-pink-800' }} font-medium">{{ $user->name }}</div>
                                 <div class="text-xs">{{ $user->username }}</div>
                             </div>
                         </x-td>
