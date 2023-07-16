@@ -4,11 +4,16 @@
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Absensi') }}</h2>
 
-                @can('validasi-absensi')
-                <div>
-                    <x-button type="button" class="{{ $validasi_exists ? 'bg-gray-400 hover:bg-gray-400' : '' }}" :disabled="$validasi_exists" color="primary" wire:click="$toggle('show_modal_confirm')">Validasi</x-button>
+                <div class="flex items-center justify-end space-x-4">
+                    @if($validasi_exists)
+                        @role('bendahara')
+                            <x-button wire:click="export" type="button" color="success">Download</x-button>
+                        @endrole
+                    @endif
+                    @can('validasi-absensi')
+                        <x-button type="button" class="{{ $validasi_exists ? 'bg-gray-400 hover:bg-gray-400' : '' }}" :disabled="$validasi_exists" color="primary" wire:click="$toggle('show_modal_confirm')">Validasi</x-button>
+                    @endcan
                 </div>
-                @endcan
             </div>
         </div>
     </header>

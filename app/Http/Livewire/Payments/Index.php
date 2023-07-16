@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Payments;
 
+use App\Exports\PaymentExport;
 use App\Models\AbsenceValidation;
 use App\Models\Payment;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
@@ -53,6 +55,15 @@ class Index extends Component
         $validation_exists = AbsenceValidation::whereMonth('for_date', $this->month)->whereYear('for_date', $this->year)->exists();
 
         return view('livewire.payments.index', compact('payments', 'validation_exists'));
+    }
+
+    public function export()
+    {
+        $data = Payment::where('month', $this->month)
+            ->where('year', $this->year)
+            ->whereHas('user', fn ($q) => $q->where('is_active', true))
+            ->get();
+        return Excel::download(new PaymentExport($data), 'DATA_GAJI_'.$this->month.'_'.$this->year.'.xlsx');
     }
 
     public function paycheck()

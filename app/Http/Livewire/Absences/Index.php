@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Absences;
 
+use App\Exports\AbsenceExport;
 use App\Models\Absence;
 use App\Models\AbsenceValidation;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
@@ -45,6 +47,18 @@ class Index extends Component
             ->get();
 
         return view('livewire.absences.index', compact('validasi_exists', 'users'));
+    }
+
+    public function export()
+    {
+        $validasi_exists = $this->checkValidasiExists();
+        $data = User::whereHas('roles')
+            ->where(fn ($user) => $validasi_exists ? $user : $user->where('is_active', true))
+            ->with('absences', fn($query) => $query->whereDate('created_at', $this->today))
+            ->orderBy('name')
+            ->get();
+        $date_string = Carbon::createFromFormat('Y-m-d', $this->today)->format('d_m_Y');
+        return Excel::download(new AbsenceExport($data), 'DATA_ABSENSI_'.$date_string.'.xlsx');
     }
 
     protected function checkValidasiExists()

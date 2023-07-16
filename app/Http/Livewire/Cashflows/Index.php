@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire\Cashflows;
 
+use App\Exports\CashflowExport;
 use App\Models\Cashflow;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
@@ -53,6 +55,15 @@ class Index extends Component
             ->orderByDesc('saved_at')
             ->paginate($this->per_page);
         return view('livewire.cashflows.index', compact('flows', 'months'));
+    }
+
+    public function export()
+    {
+        $data = Cashflow::whereMonth('saved_at', $this->this_month)
+            ->whereYear('saved_at', $this->this_year)
+            ->orderBy('saved_at')
+            ->get();
+        return Excel::download(new CashflowExport($data), 'DATA_PENGELUARAN_'.$this->this_month.'_'.$this->this_year.'.xlsx');
     }
 
     public function confirmDelete(Cashflow $cashflow)

@@ -1,14 +1,23 @@
 <div class="pb-10">
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Pengeluaran') }}
-            </h2>
-            @can('buat-pengeluaran')
-            <x-button-link href="{{ route('cashflows.create') }}" color="primary">Buat baru</x-button-link>
-            @endcan
+    <header class="bg-transparent">
+        <div class="mx-auto py-6 px-4">
+            <div class="flex items-center justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('Pengeluaran') }}
+                </h2>
+                <div class="flex items-center justify-end space-x-4">
+                    @role('bendahara')
+                        @if($flows->count())
+                        <x-button type="button" color="success" wire:click="export">Download</x-button>
+                        @endif
+                    @endrole
+                    @can('buat-pengeluaran')
+                        <x-button-link href="{{ route('cashflows.create') }}" color="primary">Buat baru</x-button-link>
+                    @endcan
+                </div>
+            </div>
         </div>
-    </x-slot>
+    </header>
 
     <div class="sm:mx-4 bg-white rounded-md">
         <div class="grid grid-cols-2 lg:grid-cols-12 p-4 gap-4">

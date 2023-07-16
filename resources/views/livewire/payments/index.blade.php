@@ -4,14 +4,20 @@
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Penggajian') }}</h2>
 
-                @can('hitung-penggajian')
                 <div class="flex items-center justify-end gap-4">
                     @if($payments->count())
-                        <x-button wire:click="$toggle('show_modal_delete')" type="button" color="danger">Reset</x-button>
+                        @role('bendahara')
+                            <x-button wire:click="export" type="button" color="success">Download</x-button>
+                        @endrole
+                        @can('hitung-penggajian')
+                            <x-button wire:click="$toggle('show_modal_delete')" type="button" color="danger">Reset</x-button>
+                        @endcan
                     @endif
-                    <x-button type="button" class="{{ ($payments->count() > 0 || !$validation_exists) ? 'bg-gray-400 hover:bg-gray-400' : '' }}" :disabled="($payments->count() > 0 || !$validation_exists)" color="primary" wire:click="$toggle('show_modal_confirmation')">Tutup buku</x-button>
+                    @can('hitung-penggajian')
+                        <x-button type="button" class="{{ ($payments->count() > 0 || !$validation_exists) ? 'bg-gray-400 hover:bg-gray-400' : '' }}" :disabled="($payments->count() > 0 || !$validation_exists)" color="primary" wire:click="$toggle('show_modal_confirmation')">Tutup buku</x-button>
+                    @endcan
+
                 </div>
-                @endcan
             </div>
         </div>
     </header>
