@@ -12,8 +12,9 @@ class PdfController extends Controller
 {
     public function paycheck(User $user, $month, $year)
     {
+        $kasir = User::whereHas('roles', fn($role) => $role->where('name', 'kasir'))->first()->name;
         $check = $user->payments()->where('month', $month)->where('year', $year)->first();
-        $pdf = Pdf::loadView('pdf.paycheck', ['user' => $user, 'check' => $check, 'month' => $month, 'year' => $year]);
-        return $pdf->stream('SLIP_GAJI ' . $month . '_' . $year . '.pdf');
+        $pdf = Pdf::loadView('pdf.paycheck', ['user' => $user, 'check' => $check, 'month' => $month, 'year' => $year, 'kasir' => $kasir]);
+        return $pdf->setPaper([0, 0, 400, 530])->stream('SLIP_GAJI ' . $month . '_' . $year . '.pdf');
     }
 }

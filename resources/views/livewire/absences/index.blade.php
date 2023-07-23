@@ -11,6 +11,9 @@
                         @endrole
                     @endif
                     @can('validasi-absensi')
+                        @if($validasi_exists)
+                            <x-button type="button" color="danger" wire:click="$toggle('show_modal_reset')">Reset</x-button>
+                        @endif
                         <x-button type="button" class="{{ $validasi_exists ? 'bg-gray-400 hover:bg-gray-400' : '' }}" :disabled="$validasi_exists" color="primary" wire:click="$toggle('show_modal_confirm')">Validasi</x-button>
                     @endcan
                 </div>
@@ -122,6 +125,17 @@
         <x-slot name="footer">
             <x-button type="button" color="secondary" wire:click="$toggle('show_modal_confirm')" class="mr-3">Batal</x-button>
             <x-button type="button" color="danger" wire:click="prosesValidasi">Ya, validasi!</x-button>
+        </x-slot>
+    </x-confirmation-modal>
+    <!-- Reset -->
+    <x-confirmation-modal wire:model="show_modal_reset">
+        <x-slot name="title">Reset Validasi Absensi</x-slot>
+        <x-slot name="content">
+            <p>Anda yakin ingin melakukan reset validasi absen untuk tanggal <strong>{{ \Carbon\Carbon::parse($today)->isoFormat('LL')  }}</strong>?</p>
+        </x-slot>
+        <x-slot name="footer">
+            <x-button type="button" color="secondary" wire:click="$toggle('show_modal_reset')" class="mr-3">Batal</x-button>
+            <x-button type="button" color="danger" wire:click="resetValidasi">Ya, reset!</x-button>
         </x-slot>
     </x-confirmation-modal>
 </div>

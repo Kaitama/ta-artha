@@ -11,6 +11,8 @@ use Livewire\Component;
 class Create extends Component
 {
 
+    public $tanggal_masuk;
+
     public $jabatan;
 
     public $keterangan;
@@ -27,7 +29,7 @@ class Create extends Component
 
     public $telepon;
 
-    public $jam_masuk;
+    public $jam_masuk = '08:00';
 
     public $point = 0;
 
@@ -67,11 +69,13 @@ class Create extends Component
     public function store()
     {
         $this->validate([
-            'jabatan'  => 'required',
-            'nomor_induk'   => 'required|unique:users,nip',
+            'tanggal_masuk' => 'required|date',
+            'jabatan'       => 'required',
+            'nomor_induk'   => 'required|numeric|digits:16|unique:users,nip',
             'nama_lengkap'  => 'required',
             'username'      => 'required|alpha_num|unique:users,username',
             'email'         => 'required|email|unique:users,email',
+            'telepon'       => 'nullable|numeric|min_digits:10|max_digits:15',
             'jam_masuk'     => 'required|date_format:H:i',
             'point'         => 'required_if:require_point,true|integer',
             'jam_mengajar'  => 'required_if:require_hours,true',
@@ -79,6 +83,8 @@ class Create extends Component
         ], [
             'jam_mengajar.required_if' => 'Jam mengajar wajib diisi apabila jabatan Guru Honor',
             'point.required_if' => 'Point wajib diisi apabila jabatan Guru Tetap, Kasir, atau Kepala Sekolah',
+            'telepon.min_digits' => ':Attribute minimal :min angka.',
+            'telepon.max_digits' => ':Attribute maksimal :max angka.',
         ]);
 
         $user = User::create([
@@ -94,6 +100,7 @@ class Create extends Component
             'password'  => \Hash::make('sdadvent2'),
             'is_active' => $this->status,
             'description' => $this->keterangan,
+            'joined_at' => $this->tanggal_masuk,
         ]);
 
         $user->assignRole($this->jabatan);

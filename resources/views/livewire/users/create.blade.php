@@ -14,6 +14,11 @@
 
             <x-slot name="form">
                 <div class="col-span-4">
+                    <x-label :required="true">Tanggal Masuk</x-label>
+                    <x-input type="date" wire:model.defer="tanggal_masuk" />
+                    <x-input-error for="tanggal_masuk" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Jabatan</x-label>
                     <x-select wire:model="jabatan">
                         <option value="" selected>Pilih salah satu</option>
@@ -29,7 +34,7 @@
                     <x-input-error for="keterangan" />
                 </div>
                 <div class="col-span-4">
-                    <x-label :required="true">Nomor Induk Pegawai/Guru</x-label>
+                    <x-label :required="true">NUPTK/NIP/NIK</x-label>
                     <x-input type="text" wire:model.defer="nomor_induk" />
                     <x-input-error for="nomor_induk" />
                 </div>
@@ -59,13 +64,14 @@
                 <div class="col-span-4">
                     <x-label>Nomor Telepon/WA</x-label>
                     <x-input type="text" wire:model.defer="telepon" />
+                    <span class="mt-1 text-xs text-gray-600">Jangan gunakan awalan "+62"</span>
                     <x-input-error for="telepon" />
                 </div>
-                <div class="col-span-4">
-                    <x-label :required="true">Jam Masuk Absensi</x-label>
-                    <x-input type="text" wire:model.defer="jam_masuk" />
-                    <x-input-error for="jam_masuk" />
-                </div>
+{{--                <div class="col-span-4">--}}
+{{--                    <x-label :required="true">Jam Masuk Absensi</x-label>--}}
+{{--                    <x-input type="text" wire:model.defer="jam_masuk" />--}}
+{{--                    <x-input-error for="jam_masuk" />--}}
+{{--                </div>--}}
                 @if($jabatan === 'guru-tetap' || $jabatan === 'kasir' || $jabatan === 'kepala-sekolah')
                 <div class="col-span-4">
                     <x-label :required="true">Point</x-label>

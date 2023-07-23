@@ -7,10 +7,15 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
+use PhpOffice\PhpSpreadsheet\Exception;
 
-class PaymentExport implements FromCollection, ShouldAutoSize, WithMapping, WithHeadings, WithColumnFormatting
+class PaymentExport extends DefaultValueBinder implements FromCollection, ShouldAutoSize, WithMapping, WithHeadings, WithColumnFormatting, WithCustomValueBinder
 {
     protected Collection $data;
 
@@ -89,5 +94,20 @@ class PaymentExport implements FromCollection, ShouldAutoSize, WithMapping, With
         ];
     }
 
+    /**
+     * @throws Exception
+     */
+    public function bindValue(Cell $cell, $value): bool
+    {
+        $numericalColumns = ['B'];
+        if (in_array($cell->getColumn(), $numericalColumns)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        // else return default behavior
+        return parent::bindValue($cell, $value);
+    }
 
 }

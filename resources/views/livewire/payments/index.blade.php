@@ -6,7 +6,7 @@
 
                 <div class="flex items-center justify-end gap-4">
                     @if($payments->count())
-                        @role('bendahara')
+                        @role('bendahara|kasir')
                             <x-button wire:click="export" type="button" color="success">Download</x-button>
                         @endrole
                         @can('hitung-penggajian')
@@ -68,9 +68,9 @@
                     <x-th>Gaji Bersih</x-th>
                     <x-th></x-th>
                 </x-slot>
-
+                @php $sum_ten_percents = 0; @endphp
                 @forelse($payments as $i => $payment)
-                    <tr class="{{ $loop->last ? '' : ' border-b' }}">
+                    <tr class="border-b">
                         <x-td>{{ $i + 1 }}</x-td>
                         <x-td>
                             <div class="text-medium text-gray-800">{{ $payment->user->name }}</div>
@@ -95,10 +95,14 @@
                                 <span>{{ \App\Helpers\Rupiah::format($payment->withdraw) }}</span>
                             </div>
                         </x-td>
+                        @php
+                            $ten_percents = ($payment->base + $payment->travel + $payment->bonus - $payment->withdraw - $payment->absence_cut) * 0.1;
+                            $sum_ten_percents += $ten_percents;
+                        @endphp
                         <x-td>
                             <div class="flex items-center justify-between">
                                 <span>Rp</span>
-                                <span>{{ \App\Helpers\Rupiah::format(($payment->base + $payment->travel + $payment->bonus - $payment->withdraw - $payment->absence_cut) * 0.1) }}</span>
+                                <span>{{ \App\Helpers\Rupiah::format($ten_percents) }}</span>
                             </div>
                         </x-td>
                         <x-td>
@@ -114,6 +118,43 @@
                 @empty
                     <x-empty-row />
                 @endforelse
+                @role('bendahara')
+                    @if($payments->isNotEmpty())
+                        <tr>
+                            <x-td class="uppercase font-bold" colspan="3">Total</x-td>
+                            <x-td>
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>Rp</span>
+                                    <span>{{ \App\Helpers\Rupiah::format($payments->sum('base')) }}</span>
+                                </div>
+                            </x-td>
+                            <x-td>
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>Rp</span>
+                                    <span>{{ \App\Helpers\Rupiah::format($payments->sum('travel') + $payments->sum('bonus')) }}</span>
+                                </div>
+                            </x-td>
+                            <x-td>
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>Rp</span>
+                                    <span>{{ \App\Helpers\Rupiah::format($payments->sum('withdraw')) }}</span>
+                                </div>
+                            </x-td>
+                            <x-td>
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>Rp</span>
+                                    <span>{{ \App\Helpers\Rupiah::format($sum_ten_percents) }}</span>
+                                </div>
+                            </x-td>
+                            <x-td>
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>Rp</span>
+                                    <span>{{ \App\Helpers\Rupiah::format($payments->sum('salary')) }}</span>
+                                </div>
+                            </x-td>
+                        </tr>
+                    @endif
+                @endrole
             </x-table>
         </div>
     </div>

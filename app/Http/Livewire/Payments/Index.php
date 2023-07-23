@@ -71,7 +71,10 @@ class Index extends Component
         $validations = AbsenceValidation::whereMonth('for_date', $this->month)
             ->whereYear('for_date', $this->year)->orderBy('for_date')->get();
 
-        $users = User::where('is_active', true)->whereHas('roles')->get();
+        $users = User::where('is_active', true)
+            ->whereMonth('joined_at', '<', Carbon::now()->month)
+            ->whereHas('roles')
+            ->get();
 
         foreach ($users as $user) {
             $r = $user->roles->first();

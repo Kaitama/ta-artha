@@ -21,6 +21,7 @@ class Edit extends Component
     public $require_hours = false;
 
     protected $validationAttributes = [
+        'user.joined_at'=> 'tanggal masuk',
         'user.nip'     => 'nomor induk',
         'user.name'    => 'nama lengkap',
         'user.gender'  => 'jenis kelamin',
@@ -32,6 +33,8 @@ class Edit extends Component
     protected $messages = [
         'jam_mengajar.required_if' => 'Jam mengajar wajib diisi apabila jabatan Guru Honor',
         'user.point.required_if' => 'Point wajib diisi apabila jabatan Guru Tetap, Kasir, atau Kepala Sekolah',
+        '*.phone.min_digits' => ':Attribute minimal :min angka.',
+        '*.phone.max_digits' => ':Attribute maksimal :max angka.',
     ];
 
     public function mount()
@@ -58,12 +61,13 @@ class Edit extends Component
         $id = $this->user->id;
         return [
             'jabatan'  => 'required',
-            'user.nip'   => 'required|unique:users,nip,' . $id,
+            'user.joined_at'    => 'required|date',
+            'user.nip'   => 'required|numeric|digits:16|unique:users,nip,' . $id,
             'user.name'  => 'required',
             'user.gender' => 'required',
             'user.username'      => 'required|alpha_num|unique:users,username,' . $id,
             'user.email'         => 'required|email|unique:users,email,' . $id,
-            'user.phone'        => 'nullable',
+            'user.phone'        => 'nullable|numeric|min_digits:10|max_digits:15',
             'user.check_in'     => 'required|date_format:H:i',
             'user.point'         => 'required_if:require_point,true|integer',
             'jam_mengajar'  => 'required_if:require_hours,true',
@@ -94,6 +98,8 @@ class Edit extends Component
     public function update()
     {
         $this->validate();
+
+        $this->user->check_in = '08:00';
 
         $this->user->hours = $this->require_hours ? array_sum($this->jam_mengajar) : 0;
 

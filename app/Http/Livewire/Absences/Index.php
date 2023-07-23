@@ -25,6 +25,8 @@ class Index extends Component
 
     public $show_modal_confirm = false;
 
+    public $show_modal_reset = false;
+
     public function mount()
     {
         $this->roles = Role::all()->pluck('name');
@@ -86,6 +88,19 @@ class Index extends Component
 
             \Toaster::success('Absensi berhasil divalidasi.');
         }
+    }
+
+    public function resetValidasi()
+    {
+        AbsenceValidation::where('for_date', $this->today)->first()->delete();
+        Absence::whereDate('created_at', $this->today)->update([
+            'is_validated' => false,
+            'validated_at' => null,
+        ]);
+
+        $this->show_modal_reset = false;
+
+        \Toaster::success('Validasi absensi berhasil di reset.');
     }
 
 }

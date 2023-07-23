@@ -14,6 +14,11 @@
 
             <x-slot name="form">
                 <div class="col-span-4">
+                    <x-label :required="true">Tanggal Masuk</x-label>
+                    <x-input type="date" wire:model.defer="user.joined_at" />
+                    <x-input-error for="user.joined_at" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Jabatan</x-label>
                     <x-select wire:model="jabatan">
                         <option value="" selected>Pilih salah satu</option>
@@ -59,13 +64,14 @@
                 <div class="col-span-4">
                     <x-label>Nomor Telepon/WA</x-label>
                     <x-input type="text" wire:model.defer="user.phone" />
+                    <span class="mt-1 text-xs text-gray-600">Jangan gunakan awalan "+62"</span>
                     <x-input-error for="user.phone" />
                 </div>
-                <div class="col-span-4">
-                    <x-label :required="true">Jam Masuk Absensi</x-label>
-                    <x-input type="text" wire:model.defer="user.check_in" />
-                    <x-input-error for="user.check_in" />
-                </div>
+{{--                <div class="col-span-4">--}}
+{{--                    <x-label :required="true">Jam Masuk Absensi</x-label>--}}
+{{--                    <x-input type="text" wire:model.defer="user.check_in" />--}}
+{{--                    <x-input-error for="user.check_in" />--}}
+{{--                </div>--}}
                 @if($jabatan === 'guru-tetap' || $jabatan === 'kasir' || $jabatan === 'kepala-sekolah')
                     <div class="col-span-4">
                         <x-label :required="true">Point</x-label>

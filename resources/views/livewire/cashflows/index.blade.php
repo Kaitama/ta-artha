@@ -6,7 +6,7 @@
                     {{ __('Pengeluaran') }}
                 </h2>
                 <div class="flex items-center justify-end space-x-4">
-                    @role('bendahara')
+                    @role('bendahara|kasir')
                         @if($flows->count())
                         <x-button type="button" color="success" wire:click="export">Download</x-button>
                         @endif

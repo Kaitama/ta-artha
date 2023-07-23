@@ -32,6 +32,7 @@
                     <x-th>Nama Lengkap</x-th>
                     <x-th>Kontak</x-th>
                     <x-th>Status</x-th>
+                    <x-th>Bergabung</x-th>
                     @canany(['ubah-pegawai', 'hapus-pegawai'])
                     <x-th></x-th>
                     @endcanany
@@ -72,6 +73,9 @@
                                 </x-slot>
                                 {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
                             </x-badge-icon>
+                        </x-td>
+                        <x-td>
+                            {{ $user->joined_at ? $user->joined_at->diffForHumans() : '-' }}
                         </x-td>
                         @canany(['ubah-pegawai', 'hapus-pegawai'])
                         <x-td>
