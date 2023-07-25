@@ -16,6 +16,12 @@
         .bold {
             font-weight: bold;
         }
+        .tbl-signature {
+            background-image: url("{{ url('img/signature.png') }}");
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            background-size: 160px;
+        }
     </style>
 </head>
 <Body>
@@ -119,7 +125,7 @@
     </table>
 
     <div style="margin-top: 32px">
-        <table style="width: 100%">
+        <table style="width: 100%;" class="tbl-signature">
             <tr>
                 <td>Diserahkan Oleh:</td>
                 <td class="right">Diterima Oleh</td>
