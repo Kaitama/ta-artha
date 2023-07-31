@@ -59,6 +59,20 @@
             <x-input-error for="name" class="mt-2" />
         </div>
 
+        <!-- Birthplace -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="birthplace" value="{{ __('Tempat lahir') }}" />
+            <x-input id="birthplace" type="text" class="mt-1 block w-full" wire:model.defer="state.birthplace" autocomplete="birthplace" />
+            <x-input-error for="birthplace" class="mt-2" />
+        </div>
+
+        <!-- Birthdate -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="birthdate" value="{{ __('Tanggal lahir') }}" />
+            <x-input id="birthdate" type="date" max="{{ \Carbon\Carbon::now()->addYears(-16)->format('Y-m-d') }}" min="{{ \Carbon\Carbon::now()->addYears(-40)->format('Y-m-d') }}" class="mt-1 block w-full" wire:model.defer="state.birthdate" autocomplete="birthdate" />
+            <x-input-error for="birthdate" class="mt-2" />
+        </div>
+
         <!-- Email -->
         <div class="col-span-6 sm:col-span-4">
             <x-label for="email" value="{{ __('Alamat email') }}" />
@@ -79,6 +93,33 @@
             <x-input id="phone" type="tel" class="mt-1 block w-full" wire:model.defer="state.phone" autocomplete="phone" />
             <x-input-error for="phone" class="mt-2" />
         </div>
+
+        <!-- Education -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="education" value="{{ __('Pendidikan terakhir') }}" />
+            <x-select wire:model.defer="state.education">
+                <option value="">Pilih salah satu</option>
+                @foreach((new \App\Models\User())->educations as $key => $education)
+                    <option value="{{ $key }}">{{ $education }}</option>
+                @endforeach
+            </x-select>
+            <x-input-error for="education" class="mt-2" />
+        </div>
+
+        <!-- Major -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="major" value="{{ __('Jurusan/Prodi') }}" />
+            <x-input id="major" type="text" class="mt-1 block w-full" wire:model.defer="state.major" autocomplete="major" />
+            <x-input-error for="major" class="mt-2" />
+        </div>
+
+        <!-- University -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="university" value="{{ __('Sekolah/Perguruan Tinggi') }}" />
+            <x-input id="university" type="text" class="mt-1 block w-full" wire:model.defer="state.university" autocomplete="university" />
+            <x-input-error for="university" class="mt-2" />
+        </div>
+
     </x-slot>
 
     <x-slot name="actions">

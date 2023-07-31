@@ -10,6 +10,9 @@
             <div class="col-span-2 space-y-4">
                 <x-layout.user-card />
                 <x-absence-card />
+                @if(auth()->user()->rosters()->exists())
+                    <livewire:components.roster />
+                @endif
                 <livewire:components.paycheck-card />
             </div>
             <div class="col-span-2 lg:col-span-4 space-y-4">

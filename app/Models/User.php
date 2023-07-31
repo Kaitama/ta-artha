@@ -42,6 +42,12 @@ class User extends Authenticatable
         'phone',
         'email',
         'password',
+        'birthplace',
+        'birthdate',
+        'religion',
+        'education',
+        'major',
+        'university',
     ];
 
     /**
@@ -63,7 +69,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'joined_at' => 'datetime',
+        'joined_at' => 'datetime:Y-m-d',
+        'birthdate' => 'date:Y-m-d',
     ];
 
     /**
@@ -74,12 +81,46 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
         'role_display_name',
+        'religion_text',
+        'education_text',
+    ];
+
+    public array $educations = [
+        1 => 'SMA',
+        2 => 'D1',
+        3 => 'D3',
+        4 => 'S1',
+        5 => 'S2',
+        6 => 'S3'
+    ];
+
+    public array $religions = [
+        1 => 'Buddha',
+        2 => 'Islam',
+        3 => 'Hindu',
+        4 => 'Katolik',
+        5 => 'Khonghucu',
+        6 => 'Protestan'
     ];
 
     public function checkIn(): Attribute
     {
         return Attribute::make(
             get: fn(string $value) => $value ? Carbon::parse($value)->format('H:i') : '',
+        );
+    }
+
+    public function educationText(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string|null => $this->education ? $this->educations[$this->education] : null,
+        );
+    }
+
+    public function religionText(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string|null => $this->religion ? $this->religions[$this->religion] : null,
         );
     }
 
@@ -115,6 +156,10 @@ class User extends Authenticatable
         return $this->hasMany(Teachinghour::class);
     }
 
+    public function rosters(): HasMany
+    {
+        return $this->hasMany(Roster::class);
+    }
 
     public function hitungGaji(int $hours = 0): int
     {

@@ -28,6 +28,12 @@ class Edit extends Component
         'user.phone'   => 'telepon',
         'user.check_in'=> 'jam masuk',
         'user.hours'   => 'jam mengajar',
+        'user.birthplace' => 'tempat lahir',
+        'user.birthdate' => 'tanggal lahir',
+        'user.religion'=> 'agama',
+        'user.education' => 'pendidikan',
+        'user.major'   => 'jurusan',
+        'user.university'=> 'perguruan tinggi',
     ];
 
     protected $messages = [
@@ -54,6 +60,10 @@ class Edit extends Component
         $this->reset('require_point', 'require_hours');
         if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
         if ($value === 'guru-honor') $this->require_hours = true;
+
+        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->user->nip = '10';
+        elseif ($value === 'guru-honor') $this->user->nip = '20';
+        else $this->user->nip = '30';
     }
 
     protected function rules(): array
@@ -62,7 +72,7 @@ class Edit extends Component
         return [
             'jabatan'  => 'required',
             'user.joined_at'    => 'required|date',
-            'user.nip'   => 'required|numeric|digits:16|unique:users,nip,' . $id,
+            'user.nip'   => 'required|numeric|digits:6|unique:users,nip,' . $id,
             'user.name'  => 'required',
             'user.gender' => 'required',
             'user.username'      => 'required|alpha_num|unique:users,username,' . $id,
@@ -73,7 +83,13 @@ class Edit extends Component
             'jam_mengajar'  => 'required_if:require_hours,true',
             'jam_mengajar.*'=> 'nullable|integer',
             'user.is_active' => 'boolean',
-            'user.description' => 'nullable|string'
+            'user.description' => 'nullable|string',
+            'user.birthplace' => 'required',
+            'user.birthdate' => 'required|date',
+            'user.religion'=> 'required',
+            'user.education' => 'required',
+            'user.major'   => 'nullable',
+            'user.university'=> 'required',
         ];
     }
 
@@ -117,8 +133,13 @@ class Edit extends Component
                     ];
                 }
             }
-            $this->user->teachinghours()->delete();
-            $this->user->teachinghours()->createMany($teaching_hours);
+            foreach ($teaching_hours as $data) {
+                if(!$this->user->teachinghours()->where('day', $data['day'])->where('hours', $data['hours'])->exists()) {
+                    $this->user->rosters()->delete();
+                    $this->user->teachinghours()->delete();
+                    $this->user->teachinghours()->createMany($teaching_hours);
+                }
+            }
         }
 
         Toaster::success('Pegawai berhasil diubah.');

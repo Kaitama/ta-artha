@@ -54,6 +54,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
                 ->middleware(['permission:ubah-pengeluaran']);
         });
 
+        // Rosters
+        Route::middleware(['permission:lihat-pegawai'])->prefix('rosters')->group(function(){
+            Route::get('/', \App\Http\Livewire\Roster\Index::class)
+                ->name('rosters.index');
+            Route::get('/{user}/create', \App\Http\Livewire\Roster\Create::class)
+                ->name('rosters.create')
+                ->middleware(['permission:buat-pegawai']);
+            Route::get('/{user}/edit', \App\Http\Livewire\Roster\Edit::class)
+                ->name('rosters.edit')
+                ->middleware(['permission:ubah-pegawai']);
+        });
+
         // Roles
         Route::middleware(['permission:lihat-jabatan'])->prefix('roles')->group(function(){
             Route::get('/', \App\Http\Livewire\Roles\Index::class)

@@ -21,6 +21,18 @@ class Create extends Component
 
     public $nama_lengkap;
 
+    public $tempat_lahir;
+
+    public $tanggal_lahir;
+
+    public $agama;
+
+    public $pendidikan;
+
+    public $jurusan;
+
+    public $perguruan_tinggi;
+
     public $jenis_kelamin = true;
 
     public $username;
@@ -64,6 +76,10 @@ class Create extends Component
         $this->reset('require_point', 'require_hours');
         if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
         if ($value === 'guru-honor') $this->require_hours = true;
+
+        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->nomor_induk = '10';
+        elseif ($value === 'guru-honor') $this->nomor_induk = '20';
+        else $this->nomor_induk = '30';
     }
 
     public function store()
@@ -71,8 +87,13 @@ class Create extends Component
         $this->validate([
             'tanggal_masuk' => 'required|date',
             'jabatan'       => 'required',
-            'nomor_induk'   => 'required|numeric|digits:16|unique:users,nip',
+            'nomor_induk'   => 'required|numeric|digits:6|unique:users,nip',
             'nama_lengkap'  => 'required',
+            'tempat_lahir'  => 'required',
+            'tanggal_lahir' => 'required|date',
+            'agama'         => 'required',
+            'pendidikan'    => 'required',
+            'perguruan_tinggi' => 'required',
             'username'      => 'required|alpha_num|unique:users,username',
             'email'         => 'required|email|unique:users,email',
             'telepon'       => 'nullable|numeric|min_digits:10|max_digits:15',
@@ -101,6 +122,12 @@ class Create extends Component
             'is_active' => $this->status,
             'description' => $this->keterangan,
             'joined_at' => $this->tanggal_masuk,
+            'birthplace'=> $this->tempat_lahir,
+            'birthdate' => $this->tanggal_lahir,
+            'religion'  => $this->agama,
+            'education' => $this->pendidikan,
+            'major'     => $this->jurusan,
+            'university'=> $this->perguruan_tinggi,
         ]);
 
         $user->assignRole($this->jabatan);

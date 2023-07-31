@@ -15,7 +15,7 @@
             <x-slot name="form">
                 <div class="col-span-4">
                     <x-label :required="true">Tanggal Masuk</x-label>
-                    <x-input type="date" wire:model.defer="tanggal_masuk" />
+                    <x-input type="date" wire:model.defer="tanggal_masuk" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
                     <x-input-error for="tanggal_masuk" />
                 </div>
                 <div class="col-span-4">
@@ -34,7 +34,7 @@
                     <x-input-error for="keterangan" />
                 </div>
                 <div class="col-span-4">
-                    <x-label :required="true">NUPTK/NIP/NIK</x-label>
+                    <x-label :required="true">Nomor Induk Pegawai</x-label>
                     <x-input type="text" wire:model.defer="nomor_induk" />
                     <x-input-error for="nomor_induk" />
                 </div>
@@ -44,12 +44,32 @@
                     <x-input-error for="nama_lengkap" />
                 </div>
                 <div class="col-span-4">
+                    <x-label :required="true">Tempat Lahir</x-label>
+                    <x-input type="text" wire:model.defer="tempat_lahir" />
+                    <x-input-error for="tempat_lahir" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Tanggal Lahir</x-label>
+                    <x-input type="date" wire:model.defer="tanggal_lahir" max="{{ \Carbon\Carbon::now()->addYears(-16)->format('Y-m-d') }}" min="{{ \Carbon\Carbon::now()->addYears(-40)->format('Y-m-d') }}" />
+                    <x-input-error for="tanggal_lahir" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Jenis Kelamin</x-label>
                     <x-select wire:model.defer="jenis_kelamin">
                         <option value="1">Laki-laki</option>
                         <option value="0">Perempuan</option>
                     </x-select>
                     <x-input-error for="jenis_kelamin" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Agama</x-label>
+                    <x-select wire:model.defer="agama">
+                        <option value="">Pilih salah satu</option>
+                        @foreach((new \App\Models\User())->religions as $key => $religion)
+                            <option value="{{ $key }}">{{ $religion }}</option>
+                        @endforeach
+                    </x-select>
+                    <x-input-error for="agama" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Login Username</x-label>
@@ -66,6 +86,26 @@
                     <x-input type="text" wire:model.defer="telepon" />
                     <span class="mt-1 text-xs text-gray-600">Jangan gunakan awalan "+62"</span>
                     <x-input-error for="telepon" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Pendidikan Terakhir</x-label>
+                    <x-select wire:model.defer="pendidikan">
+                        <option value="">Pilih salah satu</option>
+                        @foreach((new \App\Models\User())->educations as $key => $education)
+                            <option value="{{ $key }}">{{ $education }}</option>
+                        @endforeach
+                    </x-select>
+                    <x-input-error for="pendidikan" />
+                </div>
+                <div class="col-span-4">
+                    <x-label>Jurusan/Program Studi</x-label>
+                    <x-input type="text" wire:model.defer="jurusan" />
+                    <x-input-error for="jurusan" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Asal Sekolah/Perguruan Tinggi</x-label>
+                    <x-input type="text" wire:model.defer="perguruan_tinggi" />
+                    <x-input-error for="perguruan_tinggi" />
                 </div>
 {{--                <div class="col-span-4">--}}
 {{--                    <x-label :required="true">Jam Masuk Absensi</x-label>--}}

@@ -15,7 +15,7 @@
             <x-slot name="form">
                 <div class="col-span-4">
                     <x-label :required="true">Tanggal Masuk</x-label>
-                    <x-input type="date" wire:model.defer="user.joined_at" />
+                    <x-input type="date" wire:model.defer="user.joined_at" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
                     <x-input-error for="user.joined_at" />
                 </div>
                 <div class="col-span-4">
@@ -44,12 +44,32 @@
                     <x-input-error for="user.name" />
                 </div>
                 <div class="col-span-4">
+                    <x-label :required="true">Tempat Lahir</x-label>
+                    <x-input type="text" wire:model.defer="user.birthplace" />
+                    <x-input-error for="user.birthplace" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Tanggal Lahir</x-label>
+                    <x-input type="date" wire:model.defer="user.birthdate" max="{{ \Carbon\Carbon::now()->addYears(-16)->format('Y-m-d') }}" min="{{ \Carbon\Carbon::now()->addYears(-40)->format('Y-m-d') }}" />
+                    <x-input-error for="user.birthdate" />
+                </div>
+                <div class="col-span-4">
                     <x-label :required="true">Jenis Kelamin</x-label>
                     <x-select wire:model.defer="user.gender">
                         <option value="1">Laki-laki</option>
                         <option value="0">Perempuan</option>
                     </x-select>
                     <x-input-error for="user.gender" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Agama</x-label>
+                    <x-select wire:model.defer="user.religion">
+                        <option value="">Pilih salah satu</option>
+                        @foreach((new \App\Models\User())->religions as $key => $religion)
+                            <option value="{{ $key }}">{{ $religion }}</option>
+                        @endforeach
+                    </x-select>
+                    <x-input-error for="user.religion" />
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Login Username</x-label>
@@ -67,6 +87,26 @@
                     <span class="mt-1 text-xs text-gray-600">Jangan gunakan awalan "+62"</span>
                     <x-input-error for="user.phone" />
                 </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Pendidikan Terakhir</x-label>
+                    <x-select wire:model.defer="user.education">
+                        <option value="">Pilih salah satu</option>
+                        @foreach((new \App\Models\User())->educations as $key => $education)
+                            <option value="{{ $key }}">{{ $education }}</option>
+                        @endforeach
+                    </x-select>
+                    <x-input-error for="user.education" />
+                </div>
+                <div class="col-span-4">
+                    <x-label>Jurusan/Program Studi</x-label>
+                    <x-input type="text" wire:model.defer="user.major" />
+                    <x-input-error for="user.major" />
+                </div>
+                <div class="col-span-4">
+                    <x-label :required="true">Asal Sekolah/Perguruan Tinggi</x-label>
+                    <x-input type="text" wire:model.defer="user.university" />
+                    <x-input-error for="user.university" />
+                </div>
 {{--                <div class="col-span-4">--}}
 {{--                    <x-label :required="true">Jam Masuk Absensi</x-label>--}}
 {{--                    <x-input type="text" wire:model.defer="user.check_in" />--}}
@@ -80,6 +120,13 @@
                     </div>
                 @endif
                 @if($jabatan === 'guru-honor')
+                    <div class="col-span-6">
+                        <x-section-border />
+                        <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                            <span class="font-medium">Peringatan!</span> Mengubah jumlah jam mengajar akan menghapus semua jadwal roster {{ $user->name }}.
+                        </div>
+                        <x-section-border />
+                    </div>
                     @foreach($days as $key => $day)
                         <div class="col-span-4">
                             <x-label :required="true">Jumlah Jam Mengajar {{ $day }}</x-label>

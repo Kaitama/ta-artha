@@ -31,6 +31,9 @@
                     <x-th>NIP/Jabatan</x-th>
                     <x-th>Nama Lengkap</x-th>
                     <x-th>Kontak</x-th>
+                    <x-th>Lahir</x-th>
+                    <x-th>Pendidikan</x-th>
+                    <x-th>Agama</x-th>
                     <x-th>Status</x-th>
                     <x-th>Bergabung</x-th>
                     @canany(['ubah-pegawai', 'hapus-pegawai'])
@@ -54,9 +57,20 @@
                                 <div class="text-xs">{{ $user->username }}</div>
                             </div>
                         </x-td>
-                        <x-td>
+                        <x-td class="whitespace-nowrap">
                             <div class="text-gray-800 font-medium">{{ $user->phone }}</div>
                             <div class="text-xs">{{ $user->email }}</div>
+                        </x-td>
+                        <x-td class="whitespace-nowrap">
+                            <div class="text-gray-800 font-medium">{{ $user->birthplace ?? '-' }}</div>
+                            <div class="text-xs">{{ $user->birthdate ? $user->birthdate->isoFormat('LL') : '' }}</div>
+                        </x-td>
+                        <x-td class="whitespace-nowrap">
+                            <div class="text-gray-800 font-medium">{{ $user->education_text ?? '-' }} {{ $user->major ? '- ' . $user->major : '' }}</div>
+                            <div class="text-xs">{{ $user->university }}</div>
+                        </x-td>
+                        <x-td>
+                            {{ $user->religion_text ?? '-' }}
                         </x-td>
                         <x-td>
                             <x-badge-icon :color="$user->is_active ? 'success' : 'danger'">
@@ -74,7 +88,7 @@
                                 {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
                             </x-badge-icon>
                         </x-td>
-                        <x-td>
+                        <x-td class="whitespace-nowrap">
                             {{ $user->joined_at ? $user->joined_at->diffForHumans() : '-' }}
                         </x-td>
                         @canany(['ubah-pegawai', 'hapus-pegawai'])

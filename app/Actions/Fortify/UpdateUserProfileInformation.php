@@ -23,9 +23,17 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'username' => ['required', 'alpha_num', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
             'phone' => ['nullable', 'string', Rule::unique('users', 'phone')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'birthdate' => ['required', 'date'],
+            'birthplace' => ['required'],
+            'education' => ['required'],
+            'university'    => ['required']
         ], [], [
             'name'  => 'nama lengkap',
             'phone' => 'nomor telepon',
+            'birthdate' => 'tanggal lahir',
+            'birthplace' => 'tempat lahir',
+            'education' => 'pendidikan terakhir',
+            'university' => 'perguruan tinggi',
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -41,6 +49,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
                 'username' => $input['username'],
                 'phone' => $input['phone'],
+                'birthdate' => $input['birthdate'],
+                'birthplace' => $input['birthplace'],
+                'education' => $input['education'],
+                'university' => $input['university'],
+                'major' => $input['major']
             ])->save();
         }
     }
@@ -58,6 +71,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'username' => $input['username'],
             'phone' => $input['phone'],
             'email_verified_at' => null,
+            'birthdate' => $input['birthdate'],
+            'birthplace' => $input['birthplace'],
+            'education' => $input['education'],
+            'university' => $input['university'],
+            'major' => $input['major']
         ])->save();
 
         $user->sendEmailVerificationNotification();
