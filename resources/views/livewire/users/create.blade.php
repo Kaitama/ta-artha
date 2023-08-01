@@ -15,7 +15,7 @@
             <x-slot name="form">
                 <div class="col-span-4">
                     <x-label :required="true">Tanggal Masuk</x-label>
-                    <x-input type="date" wire:model.defer="tanggal_masuk" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
+                    <x-input type="date" wire:model="tanggal_masuk" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
                     <x-input-error for="tanggal_masuk" />
                 </div>
                 <div class="col-span-4">
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-span-4">
                     <x-label :required="true">Nomor Induk Pegawai</x-label>
-                    <x-input type="text" wire:model.defer="nomor_induk" />
+                    <x-input type="text" wire:model.defer="nomor_induk" readonly />
                     <x-input-error for="nomor_induk" />
                 </div>
                 <div class="col-span-4">

@@ -40,6 +40,7 @@ class Create extends Component
 
         Role::create([
             'name'  => $this->nama_jabatan,
+            'guard_name' => 'web',
             'absence_cut' => $this->potongan_absensi,
             'travel' => $this->travel,
             'base' => $this->gaji_pokok,

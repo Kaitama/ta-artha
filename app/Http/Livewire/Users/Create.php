@@ -53,6 +53,27 @@ class Create extends Component
 
     public $status = true;
 
+    protected $nip_index;
+
+    protected $nip_roles;
+
+    protected $nip_year;
+
+    protected function getNewNipIndex()
+    {
+        $existings = User::latest()->first();
+
+        if($existings) {
+            $last_digits = intval(substr($existings->nip, -1, 4));
+            $this->nip_index = $last_digits + 1;
+        } else {
+            $this->nip_index = 1;
+        }
+        $this->nip_year = substr($this->tanggal_masuk, 2, 2);
+
+        $this->nomor_induk = $this->nip_roles . $this->nip_year . str_pad($this->nip_index, 4, '0', STR_PAD_LEFT);
+    }
+
     public function render()
     {
         $days = [];
@@ -77,9 +98,16 @@ class Create extends Component
         if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
         if ($value === 'guru-honor') $this->require_hours = true;
 
-        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->nomor_induk = '10';
-        elseif ($value === 'guru-honor') $this->nomor_induk = '20';
-        else $this->nomor_induk = '30';
+        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->nip_roles = '10';
+        elseif ($value === 'guru-honor') $this->nip_roles = '20';
+        else $this->nip_roles = '30';
+
+        $this->getNewNipIndex();
+    }
+
+    public function updatedTanggalMasuk($value)
+    {
+        $this->getNewNipIndex();
     }
 
     public function store()
@@ -87,7 +115,7 @@ class Create extends Component
         $this->validate([
             'tanggal_masuk' => 'required|date',
             'jabatan'       => 'required',
-            'nomor_induk'   => 'required|numeric|digits:6|unique:users,nip',
+            'nomor_induk'   => 'required|numeric|digits:8|unique:users,nip',
             'nama_lengkap'  => 'required',
             'tempat_lahir'  => 'required',
             'tanggal_lahir' => 'required|date',

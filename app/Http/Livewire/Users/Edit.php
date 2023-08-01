@@ -20,27 +20,33 @@ class Edit extends Component
 
     public $require_hours = false;
 
+//    protected $nip_index;
+//
+//    protected $nip_roles;
+//
+//    protected $nip_year;
+
     protected $validationAttributes = [
-        'user.joined_at'=> 'tanggal masuk',
-        'user.nip'     => 'nomor induk',
-        'user.name'    => 'nama lengkap',
-        'user.gender'  => 'jenis kelamin',
-        'user.phone'   => 'telepon',
-        'user.check_in'=> 'jam masuk',
-        'user.hours'   => 'jam mengajar',
-        'user.birthplace' => 'tempat lahir',
-        'user.birthdate' => 'tanggal lahir',
-        'user.religion'=> 'agama',
-        'user.education' => 'pendidikan',
-        'user.major'   => 'jurusan',
-        'user.university'=> 'perguruan tinggi',
+        'user.joined_at'    => 'tanggal masuk',
+        'user.nip'          => 'nomor induk',
+        'user.name'         => 'nama lengkap',
+        'user.gender'       => 'jenis kelamin',
+        'user.phone'        => 'telepon',
+        'user.check_in'     => 'jam masuk',
+        'user.hours'        => 'jam mengajar',
+        'user.birthplace'   => 'tempat lahir',
+        'user.birthdate'    => 'tanggal lahir',
+        'user.religion'     => 'agama',
+        'user.education'    => 'pendidikan',
+        'user.major'        => 'jurusan',
+        'user.university'   => 'perguruan tinggi',
     ];
 
     protected $messages = [
-        'jam_mengajar.required_if' => 'Jam mengajar wajib diisi apabila jabatan Guru Honor',
-        'user.point.required_if' => 'Point wajib diisi apabila jabatan Guru Tetap, Kasir, atau Kepala Sekolah',
-        '*.phone.min_digits' => ':Attribute minimal :min angka.',
-        '*.phone.max_digits' => ':Attribute maksimal :max angka.',
+        'jam_mengajar.required_if'  => 'Jam mengajar wajib diisi apabila jabatan Guru Honor',
+        'user.point.required_if'    => 'Point wajib diisi apabila jabatan Guru Tetap, Kasir, atau Kepala Sekolah',
+        '*.phone.min_digits'        => ':Attribute minimal :min angka.',
+        '*.phone.max_digits'        => ':Attribute maksimal :max angka.',
     ];
 
     public function mount()
@@ -53,43 +59,49 @@ class Edit extends Component
             }
         }
         $this->jabatan = $this->user->roles()->first()->name ?? null;
+//
+//        $existing_nip = $this->user->nip;
+//        $this->nip_index = substr($existing_nip, -1, 4);
+//        $this->nip_roles = substr($existing_nip, 0, 2);
+//        $this->nip_year  = substr($existing_nip, 2, 2);
     }
 
-    public function updatedJabatan($value)
-    {
-        $this->reset('require_point', 'require_hours');
-        if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
-        if ($value === 'guru-honor') $this->require_hours = true;
-
-        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->user->nip = '10';
-        elseif ($value === 'guru-honor') $this->user->nip = '20';
-        else $this->user->nip = '30';
-    }
+//    public function updatedJabatan($value)
+//    {
+//        $this->reset('require_point', 'require_hours');
+//        if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
+//        if ($value === 'guru-honor') $this->require_hours = true;
+//
+//        if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->jabatan = '10';
+//        elseif ($value === 'guru-honor') $this->jabatan = '20';
+//        else $this->jabatan = '30';
+//
+//    }
 
     protected function rules(): array
     {
         $id = $this->user->id;
         return [
-            'jabatan'  => 'required',
+            'jabatan'           => 'required',
             'user.joined_at'    => 'required|date',
-            'user.nip'   => 'required|numeric|digits:6|unique:users,nip,' . $id,
-            'user.name'  => 'required',
-            'user.gender' => 'required',
-            'user.username'      => 'required|alpha_num|unique:users,username,' . $id,
-            'user.email'         => 'required|email|unique:users,email,' . $id,
+            'user.nip'          => 'required|numeric|digits:8|unique:users,nip,' . $id,
+            'user.name'         => 'required',
+            'user.gender'       => 'required',
+            'user.username'     => 'required|alpha_num|unique:users,username,' . $id,
+            'user.email'        => 'required|email|unique:users,email,' . $id,
             'user.phone'        => 'nullable|numeric|min_digits:10|max_digits:15',
             'user.check_in'     => 'required|date_format:H:i',
-            'user.point'         => 'required_if:require_point,true|integer',
-            'jam_mengajar'  => 'required_if:require_hours,true',
-            'jam_mengajar.*'=> 'nullable|integer',
-            'user.is_active' => 'boolean',
-            'user.description' => 'nullable|string',
-            'user.birthplace' => 'required',
-            'user.birthdate' => 'required|date',
-            'user.religion'=> 'required',
-            'user.education' => 'required',
-            'user.major'   => 'nullable',
-            'user.university'=> 'required',
+            'user.point'        => 'required_if:require_point,true|integer',
+            'jam_mengajar'      => 'required_if:require_hours,true',
+            'jam_mengajar.*'    => 'nullable|integer',
+            'user.is_active'    => 'boolean',
+            'user.description'  => 'nullable|string',
+            'user.birthplace'   => 'required',
+            'user.birthdate'    => 'required|date',
+            'user.religion'     => 'required',
+            'user.education'    => 'required',
+            'user.major'        => 'nullable',
+            'user.university'   => 'required',
         ];
     }
 

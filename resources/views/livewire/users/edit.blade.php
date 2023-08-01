@@ -15,7 +15,7 @@
             <x-slot name="form">
                 <div class="col-span-4">
                     <x-label :required="true">Tanggal Masuk</x-label>
-                    <x-input type="date" wire:model.defer="user.joined_at" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
+                    <x-input type="date" wire:model="user.joined_at" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
                     <x-input-error for="user.joined_at" />
                 </div>
                 <div class="col-span-4">
