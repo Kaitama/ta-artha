@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Roster;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
@@ -14,56 +15,87 @@ class Create extends Component
 
     public $sum_hours = 0;
 
+    public $schedule = 1;
+
     public $rosters = [];
+
+    public $tahun_ajaran;
+
+    public $semester;
 
     protected function rules(): array
     {
         return [
-            'rosters.*.*.start_hour' => 'required',
-            'rosters.*.*.end_hour' => 'required',
-            'rosters.*.*.subject' => 'required',
+            'rosters' => 'required|array|min:1',
+            'rosters.*.day' => 'required',
+            'rosters.*.start_hour' => 'required',
+            'rosters.*.end_hour' => 'required',
+            'rosters.*.subject' => 'required',
         ];
     }
 
     protected $validationAttributes = [
-        'rosters.*.*.start_hour'    => 'jam mulai',
-        'rosters.*.*.end_hour'    => 'jam selesai',
-        'rosters.*.*.subject'    => 'mata pelajaran',
+        'rosters'   => 'roster',
+        'rosters.*.day' => 'hari',
+        'rosters.*.start_hour'    => 'jam mulai',
+        'rosters.*.end_hour'    => 'jam selesai',
+        'rosters.*.subject'    => 'mata pelajaran',
     ];
 
-    public function mount()
+    public function mount($years, $semester)
     {
         if (!$this->user->hasRole('guru-honor')) return abort(404);
-
-        $this->teaching_hours = $this->user->teachinghours()->orderBy('day')->get(['day', 'hours'])->toArray();
-        $this->sum_hours = $this->user->teachinghours()->sum('hours');
-        foreach ($this->user->teachinghours as $key => $th){
-            for ($i = 0; $i < $th->hours; $i++){
-                $this->rosters[$th->day][$i] = [
-                    'start_hour'    => null,
-                    'end_hour'      => null,
-                    'subject'       => null,
-                ];
-            }
-        }
+        $this->tahun_ajaran = str_replace('-', '/', $years);
+        $this->semester = $semester;
     }
 
     public function store()
     {
         $this->validate();
-        $data = array();
-        foreach ($this->rosters as $day => $roster) {
-            foreach ($roster as $i => $ros) {
-                $data[] = [
-                    'start_hour'=> $ros['start_hour'],
-                    'end_hour'  => $ros['end_hour'],
-                    'subject'   => $ros['subject'],
-                    'day'       => $day,
-                ];
+        $summary = [];
+        foreach ($this->rosters as $key => $roster) {
+            $this->rosters[$key]['years'] = $this->tahun_ajaran;
+            $this->rosters[$key]['semester'] = $this->semester;
+            if(isset($summary[$roster['day']])) {
+                $summary[$roster['day']] += 1;
+            } else {
+                $summary[$roster['day']] = 1;
             }
         }
-        $this->user->rosters()->createMany($data);
+        $teaching_hours = [];
+        foreach ($summary as $key => $sum) {
+            $teaching_hours[] = [
+                'day'   => $key,
+                'hours' => $sum,
+            ];
+        }
+
+        $latest = $this->user->rosters()->orderBy('years')->first();
+        if ($latest) {
+            $num_years = str_replace('/', '', $latest->years);
+            $now_years = str_replace('/', '', $this->tahun_ajaran);
+            if ($now_years >= $num_years){
+                $this->user->teachinghours()->delete();
+                $this->user->teachinghours()->createMany($teaching_hours);
+            }
+        } else {
+            $this->user->teachinghours()->createMany($teaching_hours);
+        }
+
+        $this->user->rosters()->createMany($this->rosters);
         return to_route('rosters.index')->with('success', 'Roster berhasil disimpan.');
+    }
+
+    public function addSchedule()
+    {
+        $this->schedule += 1;
+    }
+
+    public function removeSchedule($index)
+    {
+        unset($this->rosters[$index]);
+        $this->schedule -= 1;
+
     }
 
     public function render()

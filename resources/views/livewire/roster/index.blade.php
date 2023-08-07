@@ -17,8 +17,21 @@
                     <option value="100">100</option>
                 </x-select>
             </div>
-            <div class="w-64">
-                <x-input-search :wire-model="'search'" />
+            <div class="flex items-center space-x-4">
+                <div>
+                    <x-input type="text" wire:model="tahun_ajaran" />
+                    <x-input-error for="tahun_ajaran" />
+                </div>
+                <div>
+                    <x-select wire:model="semester">
+                        <option value="1">Ganjil</option>
+                        <option value="2">Genap</option>
+                    </x-select>
+                    <x-input-error for="semester" />
+                </div>
+                <div class="w-64">
+                    <x-input-search :wire-model="'search'" />
+                </div>
             </div>
         </div>
         <div class="relative overflow-x-auto ">
@@ -56,7 +69,7 @@
                         </x-td>
                         @foreach((new \App\Models\Roster)->days as $index => $day)
                             <x-td class="whitespace-nowrap">
-                                @forelse($user->rosters()->where('day', $index)->get() as $schedule)
+                                @forelse($user->rosters()->where('years', $tahun_ajaran)->where('semester', $semester)->where('day', $index)->get() as $schedule)
                                 <div class="{{ $loop->last ? '' : 'mb-2' }}">
                                     <div class="text-gray-800 font-medium">{{ \Carbon\Carbon::parse($schedule->start_hour)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_hour)->format('H:i') }}</div>
                                     <div class="tex-xs">{{ $schedule->subject }}</div>
@@ -70,17 +83,17 @@
                         @canany(['buar-pegawai', 'ubah-pegawai', 'hapus-pegawai'])
                             <x-td>
                                 <div class="flex items-center justify-end gap-4">
-                                    @if(!$user->rosters()->exists())
+                                    @if(!$user->rosters()->where('years', $tahun_ajaran)->where('semester', $semester)->exists())
                                     @can('buat-pegawai')
-                                        <x-create-link href="{{ route('rosters.create', $user) }}">Buat</x-create-link>
+                                        <x-create-link href="{{ route('rosters.create', [$user, str_replace('/', '-', $tahun_ajaran), $semester]) }}">Buat</x-create-link>
                                     @endcan
                                     @else
                                     @can('ubah-pegawai')
-                                        <x-edit-link href="{{ route('rosters.edit', $user) }}">Ubah</x-edit-link>
+                                        <x-edit-link href="{{ route('rosters.edit', [$user, str_replace('/', '-', $tahun_ajaran), $semester]) }}">Ubah</x-edit-link>
                                     @endcan
                                     @endif
                                     @can('hapus-pegawai')
-                                        <x-delete-button wire:click="confirmDelete({{ $user }})" :disabled="$user->hasRole('kasir')">Hapus</x-delete-button>
+                                        <x-delete-button wire:click="confirmDelete({{ $user }})">Hapus</x-delete-button>
                                     @endcan
                                 </div>
                             </x-td>
@@ -99,4 +112,16 @@
 
         </div>
     </div>
+
+    <!-- Delete Confirmation -->
+    <x-confirmation-modal wire:model="show_delete_modal">
+        <x-slot name="title">Hapus Data</x-slot>
+        <x-slot name="content">
+            <p>Anda yakin ingin menghapus roster <strong>{{ $record_to_delete->name ?? '' }}</strong>?</p>
+        </x-slot>
+        <x-slot name="footer">
+            <x-button type="button" color="secondary" wire:click="$toggle('show_delete_modal')" class="mr-3">Batal</x-button>
+            <x-button type="button" color="danger" wire:click="destroy">Ya, hapus!</x-button>
+        </x-slot>
+    </x-confirmation-modal>
 </div>

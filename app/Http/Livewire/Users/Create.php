@@ -96,7 +96,7 @@ class Create extends Component
     {
         $this->reset('require_point', 'require_hours');
         if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
-        if ($value === 'guru-honor') $this->require_hours = true;
+//        if ($value === 'guru-honor') $this->require_hours = true;
 
         if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->nip_roles = '10';
         elseif ($value === 'guru-honor') $this->nip_roles = '20';
@@ -127,7 +127,7 @@ class Create extends Component
             'telepon'       => 'nullable|numeric|min_digits:10|max_digits:15',
             'jam_masuk'     => 'required|date_format:H:i',
             'point'         => 'required_if:require_point,true|integer',
-            'jam_mengajar'  => 'required_if:require_hours,true',
+//            'jam_mengajar'  => 'required_if:require_hours,true',
             'jam_mengajar.*'=> 'nullable|integer'
         ], [
             'jam_mengajar.required_if' => 'Jam mengajar wajib diisi apabila jabatan Guru Honor',

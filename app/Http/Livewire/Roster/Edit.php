@@ -8,7 +8,11 @@ use Livewire\Component;
 
 class Edit extends Component
 {
-    public User $user;
+    public $user;
+
+    public $tahun_ajaran;
+
+    public $semester;
 
     public $teaching_hours = [];
 
@@ -16,60 +20,86 @@ class Edit extends Component
 
     public $rosters = [];
 
+    public $schedule;
+
     protected function rules(): array
     {
         return [
-            'rosters.*.*.day' => 'required',
-            'rosters.*.*.start_hour' => 'required',
-            'rosters.*.*.end_hour' => 'required',
-            'rosters.*.*.subject' => 'required',
+            'rosters' => 'required|array|min:1',
+            'rosters.*.day' => 'required',
+            'rosters.*.start_hour' => 'required',
+            'rosters.*.end_hour' => 'required',
+            'rosters.*.subject' => 'required',
         ];
     }
 
     protected $validationAttributes = [
-        'rosters.*.*.start_hour'    => 'jam mulai',
-        'rosters.*.*.end_hour'    => 'jam selesai',
-        'rosters.*.*.subject'    => 'mata pelajaran',
+        'rosters'   => 'roster',
+        'rosters.*.day' => 'hari',
+        'rosters.*.start_hour'    => 'jam mulai',
+        'rosters.*.end_hour'    => 'jam selesai',
+        'rosters.*.subject'    => 'mata pelajaran',
     ];
 
-    public function mount()
+    public function mount(User $user, $years, $semester)
     {
-        if (!$this->user->hasRole('guru-honor')) return abort(404);
+        if (!$user->hasRole('guru-honor')) return abort(404);
 
-        $this->teaching_hours = $this->user->teachinghours()->orderBy('day')->get(['day', 'hours'])->toArray();
-        $this->sum_hours = $this->user->teachinghours()->sum('hours');
-        $rosters = $this->user->rosters()->get()->groupBy('day');
+        $this->user = $user;
 
-        foreach ($rosters as $day => $roster){
-            foreach ($roster as $k => $schedule){
-                $this->rosters[$day][$k] = [
-                    'id'            => $schedule->id,
-                    'day'           => $schedule->day,
-                    'start_hour'    => $schedule->start_hour,
-                    'end_hour'      => $schedule->end_hour,
-                    'subject'       => $schedule->subject,
-                ];
-            }
-        }
+        $this->tahun_ajaran = str_replace('-', '/', $years);
 
+        $this->semester = $semester;
+
+        $this->rosters = $user->rosters()
+            ->where('years', str_replace('-', '/', $years))
+            ->where('semester', $semester)
+            ->get(['day', 'start_hour', 'end_hour', 'subject'])
+            ->toArray();
+
+        $this->schedule = count($this->rosters);
     }
 
     public function update()
     {
         $this->validate();
-    dd($this->rosters);
-        foreach ($this->rosters as $schedules) {
-            foreach ($schedules as $k => $schedule){
-                Roster::find($schedule['id'])->update([
-                    'day'   => $schedule['day'],
-                    'start_hour' => $schedule['start_hour'],
-                    'end_hour'  => $schedule['end_hour'],
-                    'subject'   => $schedule['subject'],
-                ]);
+
+        $summary = [];
+        foreach ($this->rosters as $key => $roster) {
+            $this->rosters[$key]['years'] = $this->tahun_ajaran;
+            $this->rosters[$key]['semester'] = $this->semester;
+            if(isset($summary[$roster['day']])) {
+                $summary[$roster['day']] += 1;
+            } else {
+                $summary[$roster['day']] = 1;
             }
         }
+        $teaching_hours = [];
+        foreach ($summary as $key => $sum) {
+            $teaching_hours[] = [
+                'day'   => $key,
+                'hours' => $sum,
+            ];
+        }
+        $this->user->teachinghours()->delete();
+        $this->user->teachinghours()->createMany($teaching_hours);
+        $this->user->rosters()->where('years', $this->tahun_ajaran)->where('semester', $this->semester)->delete();
+        $this->user->rosters()->createMany($this->rosters);
+
 
         return to_route('rosters.index')->with('success', 'Roster berhasil diubah.');
+    }
+
+    public function addSchedule()
+    {
+        $this->schedule += 1;
+    }
+
+    public function removeSchedule($index)
+    {
+        unset($this->rosters[$index]);
+        $this->schedule -= 1;
+
     }
 
     public function render()

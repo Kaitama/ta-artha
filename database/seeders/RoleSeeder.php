@@ -17,7 +17,10 @@ class RoleSeeder extends Seeder
         $kepala_sekolah = Role::create([
             'name'  => 'kepala-sekolah',
             'rate'  => 26000,
+            'travel' => 600000,
+            'bonus' => 800000,
             'absence_cut'   => 50000,
+            'limit' => 500000,
             'priority'      => true,
         ]);
         $kepala_sekolah->syncPermissions([
@@ -28,6 +31,9 @@ class RoleSeeder extends Seeder
         $kasir = Role::create([
             'name'  => 'kasir',
             'rate'  => 26000,
+            'travel' => 100000,
+            'bonus' => 150000,
+            'limit' => 500000,
             'absence_cut'   => 50000,
             'priority'      => true,
         ]);
@@ -50,6 +56,9 @@ class RoleSeeder extends Seeder
         $guru_tetap = Role::create([
             'name'  => 'guru-tetap',
             'rate'  => 26000,
+            'travel' => 100000,
+            'bonus' => 150000,
+            'limit' => 500000,
             'absence_cut'   => 50000,
             'priority'      => true,
         ]);
@@ -61,6 +70,8 @@ class RoleSeeder extends Seeder
         ]);
         $bendahara = Role::create([
             'name' => 'bendahara',
+            'base' => 500000,
+            'limit' => 500000,
             'priority'      => true,
         ]);
         $bendahara->syncPermissions([

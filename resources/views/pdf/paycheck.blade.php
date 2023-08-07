@@ -49,7 +49,7 @@
             <tr>
                 <td>{{ $check->point ? 'Point' : 'Jam Mengajar' }}</td>
                 <td>:</td>
-                <td class="right">{{ $check->point ?? $check->hours }}</td>
+                <td class="right">{{ $check->point > 0 ? $check->point : $check->hours }}</td>
                 <td></td>
             </tr>
             <tr>

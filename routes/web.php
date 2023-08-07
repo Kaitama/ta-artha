@@ -58,10 +58,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::middleware(['permission:lihat-pegawai'])->prefix('rosters')->group(function(){
             Route::get('/', \App\Http\Livewire\Roster\Index::class)
                 ->name('rosters.index');
-            Route::get('/{user}/create', \App\Http\Livewire\Roster\Create::class)
+            Route::get('/{user}/{years}/{semester}/create', \App\Http\Livewire\Roster\Create::class)
                 ->name('rosters.create')
                 ->middleware(['permission:buat-pegawai']);
-            Route::get('/{user}/edit', \App\Http\Livewire\Roster\Edit::class)
+            Route::get('/{user}/{years}/{semester}/edit', \App\Http\Livewire\Roster\Edit::class)
                 ->name('rosters.edit')
                 ->middleware(['permission:ubah-pegawai']);
         });

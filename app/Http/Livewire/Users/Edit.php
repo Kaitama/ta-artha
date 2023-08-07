@@ -52,12 +52,12 @@ class Edit extends Component
     public function mount()
     {
         if ($this->user->hasAnyRole('guru-tetap', 'kasir', 'kepala-sekolah')) $this->require_point = true;
-        if ($this->user->hasAnyRole('guru-honor')) {
-            $this->require_hours = true;
-            foreach ($this->user->teachinghours as $hour) {
-                $this->jam_mengajar[$hour->day] = $hour->hours;
-            }
-        }
+//        if ($this->user->hasAnyRole('guru-honor')) {
+//            $this->require_hours = true;
+//            foreach ($this->user->teachinghours as $hour) {
+//                $this->jam_mengajar[$hour->day] = $hour->hours;
+//            }
+//        }
         $this->jabatan = $this->user->roles()->first()->name ?? null;
 //
 //        $existing_nip = $this->user->nip;

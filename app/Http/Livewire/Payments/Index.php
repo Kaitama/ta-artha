@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
+
     public object $roles;
 
     public array $months;
@@ -76,6 +77,8 @@ class Index extends Component
             ->whereHas('roles')
             ->get();
 
+
+        // TODO fix payments calculation
         foreach ($users as $user) {
             $r = $user->roles->first();
             $absence = 0;
@@ -84,13 +87,27 @@ class Index extends Component
                 if(!$user->absences()->whereDate('created_at', $validation->for_date)->exists()){
                     $absence++;
                 } else {
-                    if ($user->hours > 0) {
+                    $this_month = Carbon::now()->month;
+                    if ($this_month <= 6) {
+                        $years = Carbon::now()->addYears(-1)->year . '/' . Carbon::now()->year;
+                        $semester = 2;
+                    } else {
+                        $years = Carbon::now()->year . '/' . Carbon::now()->addYear()->year;
+                        $semester = 1;
+                    }
+                    if ($user->rosters()->exists()) {
                         $day_int = $validation->for_date->getDaysFromStartOfWeek() + 1;
-                        $teaching_hour = $user->teachinghours()->where('day', $day_int)->first();
-                        $total_hours += $teaching_hour->hours ?? 0;
+                        $teaching_hour = $user->rosters()
+                            ->where('years', $years)
+                            ->where('semester', $semester)
+                            ->where('day', $day_int)
+                            ->count();
+//                        $total_hours += $teaching_hour->hours ?? 0;
+                        $total_hours += $teaching_hour;
                     }
                 }
             }
+
             $minus = $user->cashflows()
                 ->whereMonth('saved_at', $this->month)
                 ->whereYear('saved_at', $this->year)

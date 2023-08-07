@@ -119,7 +119,7 @@
                     <x-input-error for="point" />
                 </div>
                 @endif
-                @if($jabatan === 'guru-honor')
+                @if($require_hours)
                     @foreach($days as $key => $day)
                         <div class="col-span-4">
                             <x-label :required="true">Jumlah Jam Mengajar {{ $day }}</x-label>

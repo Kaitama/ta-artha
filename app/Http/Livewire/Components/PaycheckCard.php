@@ -39,7 +39,7 @@ class PaycheckCard extends Component
         $user = \Auth::user();
         $kasir = User::whereHas('roles', fn($role) => $role->where('name', 'kasir'))->first()->name;
         $check = $user->payments()->where('month', $this->month)->where('year', $this->year)->first();
-        $pdf = Pdf::loadView('pdf.paycheck', ['user' => \Auth::user(), 'check' => $check, 'month' => $this->month, 'year' => $this->year, 'kasir' => $kasir])->output();
+        $pdf = Pdf::setPaper([0, 0, 400, 530])->loadView('pdf.paycheck', ['user' => \Auth::user(), 'check' => $check, 'month' => $this->month, 'year' => $this->year, 'kasir' => $kasir])->output();
         return response()->streamDownload(
             fn () => print($pdf),
             'SLIP GAJI ' . $this->months[$this->month] . ' ' . $this->year . '.pdf'

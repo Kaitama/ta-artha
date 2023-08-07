@@ -168,7 +168,7 @@ class User extends Authenticatable
             return $this->point * $this->roles->first()->rate;
         }
         // guru honor
-        elseif ($this->hours) {
+        elseif ($hours > 0) {
             return $hours * $this->roles->first()->rate;
         }
         // pegawai, bendahara, dll
