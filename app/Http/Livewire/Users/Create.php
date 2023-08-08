@@ -53,11 +53,17 @@ class Create extends Component
 
     public $status = true;
 
-    protected $nip_index;
+    protected string $nip_index = '';
 
-    protected $nip_roles;
+    protected string $nip_roles = '';
 
-    protected $nip_year;
+    protected string $nip_year = '';
+
+    public function mount()
+    {
+
+
+    }
 
     protected function getNewNipIndex()
     {
@@ -65,38 +71,20 @@ class Create extends Component
 
         if($existings) {
             $last_digits = intval(substr($existings->nip, -1, 4));
-            $this->nip_index = $last_digits + 1;
+            $index = $last_digits + 1;
         } else {
-            $this->nip_index = 1;
+            $index = 1;
         }
-        $this->nip_year = substr($this->tanggal_masuk, 2, 2);
 
-        $this->nomor_induk = $this->nip_roles . $this->nip_year . str_pad($this->nip_index, 4, '0', STR_PAD_LEFT);
-    }
-
-    public function render()
-    {
-        $days = [];
-        for ($i = 0; $i <= 4; $i++){
-            $days[$i + 1] = Carbon::now()->startOf('week')->addDay($i)->dayName;
-        }
-        $role_exists = [
-            'kepala-sekolah' => User::whereHas('roles', fn ($role) => $role->where('name', 'kepala-sekolah'))->exists(),
-            'kasir' => User::whereHas('roles', fn ($role) => $role->where('name', 'kasir'))->exists(),
-            'bendahara' => User::whereHas('roles', fn ($role) => $role->where('name', 'bendahara'))->exists(),
-        ];
-        return view('livewire.users.create', [
-            'roles' => Role::all()->pluck('name'),
-            'days' => $days,
-            'role_exists' => $role_exists
-        ]);
+        $this->nip_year = substr($this->tanggal_masuk, 0, 4);
+        $this->nip_index = str_pad($index, 4, '0', STR_PAD_LEFT);
+        $this->nomor_induk = $this->nip_roles . $this->nip_year . $this->nip_index;
     }
 
     public function updatedJabatan($value)
     {
         $this->reset('require_point', 'require_hours');
         if ($value === 'guru-tetap' || $value === 'kasir' || $value === 'kepala-sekolah') $this->require_point = true;
-//        if ($value === 'guru-honor') $this->require_hours = true;
 
         if ($value === 'guru-tetap' || $value === 'kepala-sekolah') $this->nip_roles = '10';
         elseif ($value === 'guru-honor') $this->nip_roles = '20';
@@ -107,7 +95,8 @@ class Create extends Component
 
     public function updatedTanggalMasuk($value)
     {
-        $this->getNewNipIndex();
+        $this->reset('jabatan', 'nomor_induk');
+        $this->nip_year = substr($value, 0, 4);
     }
 
     public function store()
@@ -115,7 +104,7 @@ class Create extends Component
         $this->validate([
             'tanggal_masuk' => 'required|date',
             'jabatan'       => 'required',
-            'nomor_induk'   => 'required|numeric|digits:8|unique:users,nip',
+            'nomor_induk'   => 'required|numeric|digits:10|unique:users,nip',
             'nama_lengkap'  => 'required',
             'tempat_lahir'  => 'required',
             'tanggal_lahir' => 'required|date',
@@ -172,5 +161,23 @@ class Create extends Component
         }
 
         return to_route('users.index')->success('Pegawai berhasil disimpan.');
+    }
+
+    public function render()
+    {
+        $days = [];
+        for ($i = 0; $i <= 4; $i++){
+            $days[$i + 1] = Carbon::now()->startOf('week')->addDay($i)->dayName;
+        }
+        $role_exists = [
+            'kepala-sekolah' => User::whereHas('roles', fn ($role) => $role->where('name', 'kepala-sekolah'))->exists(),
+            'kasir' => User::whereHas('roles', fn ($role) => $role->where('name', 'kasir'))->exists(),
+            'bendahara' => User::whereHas('roles', fn ($role) => $role->where('name', 'bendahara'))->exists(),
+        ];
+        return view('livewire.users.create', [
+            'roles' => Role::all()->pluck('name'),
+            'days' => $days,
+            'role_exists' => $role_exists
+        ]);
     }
 }

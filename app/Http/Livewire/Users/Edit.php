@@ -84,7 +84,7 @@ class Edit extends Component
         return [
             'jabatan'           => 'required',
             'user.joined_at'    => 'required|date',
-            'user.nip'          => 'required|numeric|digits:8|unique:users,nip,' . $id,
+            'user.nip'          => 'required|numeric|digits:10|unique:users,nip,' . $id,
             'user.name'         => 'required',
             'user.gender'       => 'required',
             'user.username'     => 'required|alpha_num|unique:users,username,' . $id,
