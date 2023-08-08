@@ -17,7 +17,7 @@
             font-weight: bold;
         }
         .tbl-signature {
-            background-image: url("{{ url('img/signature.png') }}");
+            background-image: url("{{ public_path('img/signature.png') }}");
             background-repeat: no-repeat;
             background-position: bottom left;
             background-size: 160px;
