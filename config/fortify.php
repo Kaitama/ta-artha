@@ -134,7 +134,7 @@ return [
 
     'features' => [
 //        Features::registration(),
-        Features::resetPasswords(),
+//        Features::resetPasswords(),
         // Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),

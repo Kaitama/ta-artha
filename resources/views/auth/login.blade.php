@@ -15,6 +15,11 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
+            <div class="text-center mb-6 sm:border-b pb-4">
+                <h2 class="text-lg font-semibold text-gray-600">Sistem Informasi</h2>
+                <h1 class="text-2xl font-bold">SDS Advent 2</h1>
+            </div>
+
             <div>
                 <x-label for="username" value="{{ __('Username') }}" />
                 <x-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
