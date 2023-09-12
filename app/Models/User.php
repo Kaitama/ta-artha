@@ -161,6 +161,11 @@ class User extends Authenticatable
         return $this->hasMany(Roster::class);
     }
 
+    public function teachers(): HasMany
+    {
+        return $this->hasMany(Teacher::class);
+    }
+
     public function hitungGaji(int $hours = 0): int
     {
         // guru tetap, kepsek, kasir
