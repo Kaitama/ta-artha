@@ -7,7 +7,7 @@
                 <div class="flex items-center justify-end gap-4">
                     @if($payments->count())
                         @role('bendahara|kasir')
-                            <x-button wire:click="export" type="button" color="success">Download</x-button>
+                            <x-button wire:click="export" type="button" color="success">Download Slip Gaji</x-button>
                         @endrole
                         @can('hitung-penggajian')
                             <x-button wire:click="$toggle('show_modal_delete')" type="button" color="danger">Reset</x-button>
@@ -108,7 +108,7 @@
                         <x-td>
                             <div class="flex items-center justify-between">
                                 <span>Rp</span>
-                                <span>{{ \App\Helpers\Rupiah::format($payment->salary) }}</span>
+                                <span>{{ \App\Helpers\Rupiah::format(max($payment->salary, 0)) }}</span>
                             </div>
                         </x-td>
                         <x-td class="text-right">

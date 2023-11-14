@@ -116,7 +116,8 @@ class Index extends Component
             $base = $user->hitungGaji($total_hours);
             $bruto = $base + $r->travel + $r->bonus - $minus - $absence_cut;
             $ten_percent = $bruto * 10 / 100;
-            $salary = $bruto - $ten_percent;
+            $temp_salary = $bruto - $ten_percent;
+            $salary = max($temp_salary, 0);
             $user->payments()->create([
                 'month' => $this->month,
                 'year'  => $this->year,
