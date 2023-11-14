@@ -91,7 +91,7 @@
                                 <x-edit-link href="{{ route('roles.edit', $role) }}">Ubah</x-edit-link>
                                 @endcan
                                 @can('hapus-jabatan')
-                                <x-delete-button wire:click="confirmDelete({{ $role }})" :disabled="$role->priority">Hapus</x-delete-button>
+                                <x-delete-button class="{{ $role->priority ? 'hidden' : '' }}" wire:click="confirmDelete({{ $role }})" :disabled="$role->priority">Hapus</x-delete-button>
                                 @endcan
                             </div>
                         </x-td>
