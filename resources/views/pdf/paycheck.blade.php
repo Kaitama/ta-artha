@@ -120,7 +120,7 @@
         <tr>
             <td>Gaji Diterima</td>
             <td>:</td>
-            <td class="right" colspan="2" style="border-top: 2px double black">{{ \App\Helpers\Rupiah::format($gator - $persepuluhan) }}</td>
+            <td class="right" colspan="2" style="border-top: 2px double black">{{ \App\Helpers\Rupiah::format(max($gator - $persepuluhan, 0)) }}</td>
         </tr>
     </table>
 
